@@ -18,7 +18,7 @@ class Sender(models.Model):
 
 class Client(models.Model):
     phone_number = models.CharField(max_length=10, null=False, verbose_name='Номер телефона')
-    code_operator = models.SmallIntegerField(null=False, verbose_name='Код мобильного оператора')
+    code_operator = models.SmallIntegerField(null=False, verbose_name='Код моб. оператора')
     teg = models.CharField(max_length=100, null=True, verbose_name='Тег')
     time_zone = models.CharField(max_length=7, null=True, verbose_name='Часовой пояс')
 

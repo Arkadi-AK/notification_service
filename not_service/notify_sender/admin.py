@@ -10,7 +10,7 @@ class SenderAdmin(admin.ModelAdmin):
 class ClientAdmin(admin.ModelAdmin):
     list_display = ('id', 'phone_number', 'code_operator', 'teg', 'time_zone')
     list_display_links = ('id', 'phone_number')
-    list_filter = ('phone_number',)
+    list_filter = ('code_operator',)
     save_on_top = True
 
 
