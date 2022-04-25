@@ -1,23 +1,34 @@
-from django.contrib.auth import get_user_model
+from rest_framework.fields import SerializerMethodField
+from rest_framework.relations import HyperlinkedIdentityField
 from rest_framework.serializers import (ModelSerializer)
 
-from notify_sender.models import Client
+from notify_sender.models import Client, Sender
 
 
-class ClientSerializer(ModelSerializer):
+class ClientListSerializer(ModelSerializer):
+    url = HyperlinkedIdentityField(view_name='client-detail')
+
     class Meta:
         model = Client
         queryset = model.objects.all()
-        fields = ('phone_number', 'code_operator', 'teg', 'time_zone')
-        # extra_kwargs = {'password': {'write_only': True}}
+        fields = ('url', 'phone_number', 'code_operator', 'teg', 'time_zone')
 
-    # def create(self, validated_data):
-    #     phone_number = validated_data.pop('phone_number', 'code_operator')
-    #     client = self.Meta.model(**validated_data)
-    #     client.set_password(phone_number)
-    #     client.save()
-    #     return client
-    #
-    # def update(self, instance, validated_data):
-    #     instance.set_password(validated_data.pop('password', ''))
-    #     return super().update(instance, validated_data)
+
+class ClientDetailSerializer(ModelSerializer):
+    client = SerializerMethodField(read_only=True)
+
+    def get_client(self, obj):
+        return str(obj.client.phone_number)
+
+    class Meta:
+        model = Client
+        fields = ('url', 'phone_number', 'code_operator', 'teg', 'time_zone')
+
+
+class SenderListSerializer(ModelSerializer):
+    url = HyperlinkedIdentityField(view_name='sender-detail')
+
+    class Meta:
+        model = Sender
+        queryset = model.objects.all()
+        fields = ('url', 'start_mailing', 'stop_mailing', 'text', 'filter')
