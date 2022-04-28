@@ -17,3 +17,4 @@ class SenderViewSet(ModelViewSet):
     queryset = model.objects.all()
     serializer_class = SenderListSerializer
     permission_classes = (IsAdminUser,)
+

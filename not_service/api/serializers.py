@@ -2,6 +2,7 @@ from rest_framework.fields import SerializerMethodField
 from rest_framework.relations import HyperlinkedIdentityField
 from rest_framework.serializers import (ModelSerializer)
 
+from api.post_sender import send_message
 from notify_sender.models import Client, Sender
 
 
@@ -32,3 +33,14 @@ class SenderListSerializer(ModelSerializer):
         model = Sender
         queryset = model.objects.all()
         fields = ('url', 'start_mailing', 'stop_mailing', 'text', 'filter')
+
+    def select_clients_with_filter(self, text, filter):
+        queryset = Client.objects.filter(teg=filter).values('id', 'phone_number')
+        send_message(queryset, text)
+        return queryset
+
+    def create(self, validated_data):
+        text = self.validated_data['text']
+        filter = self.validated_data['filter']
+        self.select_clients_with_filter(text, filter)
+        return Sender.objects.create(**validated_data)
