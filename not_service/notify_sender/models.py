@@ -1,19 +1,8 @@
+from datetime import datetime
+
 from django.db import models
 
-
-class Sender(models.Model):
-    start_mailing = models.DateTimeField(null=False, verbose_name='Время запуска рассылки')
-    stop_mailing = models.DateTimeField(null=False, verbose_name='Время окончания рассылки')
-    text = models.TextField(blank=True)
-    filter = models.CharField(max_length=255, null=True, verbose_name='Фильтр')
-
-    def __str__(self):
-        return f"Рассылка {self.id}"
-
-    class Meta:
-        ordering = ['id']
-        verbose_name = 'Рассылка'
-        verbose_name_plural = 'Рассылки'
+from api.post_sender import send_message
 
 
 class Client(models.Model):
@@ -29,6 +18,36 @@ class Client(models.Model):
         ordering = ['id']
         verbose_name = 'Клиент'
         verbose_name_plural = 'Клиенты'
+
+
+class Sender(models.Model):
+    start_mailing = models.DateTimeField(null=False, verbose_name='Время запуска рассылки')
+    stop_mailing = models.DateTimeField(null=False, verbose_name='Время окончания рассылки')
+    text = models.TextField(blank=True)
+    filter = models.CharField(max_length=255, null=True, verbose_name='Фильтр')
+
+    def __str__(self):
+        return f"Рассылка {self.id}"
+
+    def select_clients_with_filter(self):
+        text = self.text
+        filter = self.filter
+        start_mailing = self.start_mailing.strftime('%Y.%m.%d %H:%M:%S')
+        stop_mailing = self.stop_mailing.strftime('%Y.%m.%d %H:%M:%S')
+        now = datetime.now().strftime('%Y.%m.%d %H:%M:%S')
+        if start_mailing < now < stop_mailing:
+            queryset = Client.objects.filter(teg=filter).values('id', 'phone_number')
+            send_message(queryset, text)
+            return queryset
+
+    def save(self, *args, **kwargs):
+        self.select_clients_with_filter()
+        super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = 'Рассылка'
+        verbose_name_plural = 'Рассылки'
 
 
 class Message(models.Model):
