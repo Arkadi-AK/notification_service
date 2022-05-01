@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'notify_sender',
     'rest_framework',
     'api',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
