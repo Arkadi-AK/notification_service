@@ -53,8 +53,8 @@ class Sender(models.Model):
 class Message(models.Model):
     created_at = models.DateTimeField(auto_now=True, verbose_name='Дата создания')
     status = models.CharField(max_length=50, null=True, verbose_name='Статус отправки')
-    id_mailing = models.ForeignKey(Sender, on_delete=models.CASCADE)
-    id_client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    mailing = models.ForeignKey(Sender, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Сообщение {self.id}"

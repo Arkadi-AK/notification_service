@@ -12,7 +12,7 @@ class SenderAdmin(admin.ModelAdmin):
     actions = ['start_mailing']
 
     def start_mailing(self, request, queryset):
-        updated = send_message(request)
+        # updated = send_message(request)
         # updated = queryset.update(status='p')
         updated = queryset.update
         self.message_user(request, ngettext(
@@ -30,7 +30,7 @@ class ClientAdmin(admin.ModelAdmin):
 
 
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ('id', 'created_at', 'status', 'id_mailing', 'id_client')
+    list_display = ('id', 'created_at', 'status', 'mailing', 'client')
     list_display_links = ('id',)
     list_filter = ('status',)
     save_on_top = True
