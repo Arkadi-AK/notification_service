@@ -21,10 +21,10 @@ pip install -r requirements.txt
 ```python manage.py runserver```
 
 ## Использование
-http://127.0.0.1:8000/admin # адрес для входа в админ панель
-http://127.0.0.1:8000/api/ # список url адресов API
-http://127.0.0.1:8000/api/client # список клиентов
-http://127.0.0.1:8000/api/sender # список рассылок
+* http://127.0.0.1:8000/admin # адрес для входа в админ панель
+* http://127.0.0.1:8000/api/ # список url адресов API
+* http://127.0.0.1:8000/api/client # список клиентов
+* http://127.0.0.1:8000/api/sender # список рассылок
 ![Список рассылок](not_service/docs/pictures/url_sender_list.PNG)
 
 ## Дополнительные задания
