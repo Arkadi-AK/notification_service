@@ -1,13 +1,14 @@
+import time
+
 import requests
 
-from not_service.settings import TOKEN
-
-URL = 'https://probe.fbrq.cloud/v1/send'
+from not_service.settings import TOKEN, URL
 
 
 def send_message(content: list, text):
     bearer_token = TOKEN
     for item in content:
+        time.sleep(5)
         url = f"{URL}/{item['id']}"
         json = item
         json['text'] = text

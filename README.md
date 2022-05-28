@@ -27,9 +27,15 @@ pip install -r requirements.txt
 * http://127.0.0.1:8000/api/sender # список рассылок
 ![Список рассылок](not_service/docs/pictures/url_sender_list.PNG)
 
+
+* Запуск celery `celery -A not_service worker -l info`
+* Запуск celery beat `celery -A not_service beat -l info`
+
+
 ## Дополнительные задания
 
 * п. 3. Запуск сервиса с помощью **docker-compose**.
 Выполните команду `docker-compose up --build`
+или `docker compose up --build`
 
 * п. 5. http://127.0.0.1:8000/docs # По этому адресу открывается страница со Swagger UI с описанием разработанного API.

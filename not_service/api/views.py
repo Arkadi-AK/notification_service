@@ -1,3 +1,4 @@
+# from logpipe import Producer
 from rest_framework.permissions import IsAdminUser
 from rest_framework.viewsets import ModelViewSet
 
@@ -16,4 +17,5 @@ class SenderViewSet(ModelViewSet):
     model = Sender
     queryset = model.objects.all()
     serializer_class = SenderListSerializer
+    # producer = Producer('people', SenderListSerializer)
     permission_classes = (IsAdminUser,)

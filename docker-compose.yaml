@@ -1,10 +1,31 @@
-version: "3.9"
+#version: "3.9"
+#
+#services:
+#  not_service:
+#    restart: always
+#    build:
+#      context: ./not_service
+#    ports:
+#      - "8000:8000"
+#    command: ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+
+
+version: "3"
 
 services:
-  not_service:
+  redis:
+    image: redis
     restart: always
-    build:
-      context: ./not_service
     ports:
-      - "8000:8000"
-    command: ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+    - "6379:6379"
+#    command: ["docker" "run" "-d" "-p" "redis"]
+
+  flower:
+    image: mher/flower:0.9.5
+    command: ['flower', '--broker=redis://redis:6379', '--port=5555']
+    expose:
+      - 5555
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
