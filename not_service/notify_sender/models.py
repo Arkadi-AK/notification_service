@@ -5,7 +5,7 @@ from django.utils.timezone import activate
 from django.utils.timezone import localtime, now
 
 # get now datetime based upon django settings.py TZ_INFO
-from notify_sender.tasks import send_message_task, send_message_task2
+from notify_sender.tasks import send_message_task
 
 l = localtime(now())
 
@@ -46,19 +46,19 @@ class Sender(models.Model):
     def __str__(self):
         return f"Рассылка {self.id}"
 
-    def select_clients_with_filter(self):
-        print("Сработал метод select_clients_with_filter")
-        text = self.text
-        filter = self.filter
-        start_mailing = self.start_mailing.strftime('%Y.%m.%d %H:%M:%S')
-        stop_mailing = self.stop_mailing.strftime('%Y.%m.%d %H:%M:%S')
-        now = datetime.utcnow().strftime('%Y.%m.%d %H:%M:%S')
-        if filter:
-            queryset = Client.objects.filter(teg=filter).values('id', 'phone_number')
-        else:
-            queryset = Client.objects.all().values('id', 'phone_number')
-        queryset = list(queryset)
-        send_message_task2.delay(queryset, text, start_mailing, stop_mailing)
+    # def select_clients_with_filter(self):
+    #     print("Сработал метод select_clients_with_filter")
+    #     text = self.text
+    #     filter = self.filter
+    #     start_mailing = self.start_mailing.strftime('%Y.%m.%d %H:%M:%S')
+    #     stop_mailing = self.stop_mailing.strftime('%Y.%m.%d %H:%M:%S')
+    #     now = datetime.utcnow().strftime('%Y.%m.%d %H:%M:%S')
+    #     if filter:
+    #         queryset = Client.objects.filter(teg=filter).values('id', 'phone_number')
+    #     else:
+    #         queryset = Client.objects.all().values('id', 'phone_number')
+    #     queryset = list(queryset)
+    #     send_message_task2.delay(queryset, text, start_mailing, stop_mailing)
 
         # if start_mailing < now < stop_mailing:
         #     print("дата в пределах")
@@ -70,9 +70,19 @@ class Sender(models.Model):
             # return queryset
 
     def save(self, *args, **kwargs):
-        self.select_clients_with_filter()
+        text = self.text
+        filter = self.filter
+        eta = self.start_mailing
+        expires = self.stop_mailing
+        if filter:
+            queryset = Client.objects.filter(teg=filter).values('id', 'phone_number')
+        else:
+            queryset = Client.objects.all().values('id', 'phone_number')
+        queryset = list(queryset)
         print("Сработал метод save в модели")
         super().save(*args, **kwargs)
+        kw = {'queryset': queryset, 'text': text}
+        send_message_task.apply_async(eta=eta, expires=expires, kwargs=kw)
 
     class Meta:
         ordering = ['id']

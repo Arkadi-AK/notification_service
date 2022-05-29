@@ -1,24 +1,24 @@
-#version: "3.9"
-#
-#services:
-#  not_service:
-#    restart: always
-#    build:
-#      context: ./not_service
-#    ports:
-#      - "8000:8000"
-#    command: ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
-
-
 version: "3"
 
 services:
+
+  not_service:
+    restart: always
+    build:
+      context: ./not_service
+    ports:
+      - "8000:8000"
+    command: ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+    depends_on:
+      - redis
+    volumes:
+      - ./:/app
+
   redis:
     image: redis
     restart: always
     ports:
     - "6379:6379"
-#    command: ["docker" "run" "-d" "-p" "redis"]
 
   flower:
     image: mher/flower:0.9.5
@@ -27,5 +27,13 @@ services:
       - 5555
     ports:
       - "5555:5555"
+    depends_on:
+      - redis
+
+  celery:
+    build : ./not_service
+    command: celery -A not_service worker -l INFO
+    volumes:
+      - ./:/app
     depends_on:
       - redis

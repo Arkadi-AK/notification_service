@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'drf_yasg',
-    # 'logpipe',
 ]
 
 MIDDLEWARE = [
@@ -112,7 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -135,33 +134,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #     )
 # }
 
-LOGPIPE = {
-    # Required Settings
-    'OFFSET_BACKEND': 'logpipe.backend.kafka.ModelOffsetStore',
-    'CONSUMER_BACKEND': 'logpipe.backend.kafka.Consumer',
-    'PRODUCER_BACKEND': 'logpipe.backend.kafka.Producer',
-    'KAFKA_BOOTSTRAP_SERVERS': [
-        'kafka:9092'
-    ],
-    'KAFKA_CONSUMER_KWARGS': {
-        'group_id': 'django-logpipe',
-    },
-
-# Optional Settings
-# 'KAFKA_SEND_TIMEOUT': 10,
-# 'KAFKA_MAX_SEND_RETRIES': 0,
-# 'MIN_MESSAGE_LAG_MS': 0,
-# 'DEFAULT_FORMAT': 'json',
-}
-
-
 # Redis related settings
-# REDIS_HOST = '0.0.0.0' # порт по видосу не сработал для redis в докере
+# REDIS_HOST = '0.0.0.0'
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'
-CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+# If celery and redis are in local, use these settings:
+# CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+# CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
-CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASKS_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+# If celery and redis are in docker, use these settings:
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'

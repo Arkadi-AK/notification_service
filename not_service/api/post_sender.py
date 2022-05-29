@@ -8,7 +8,7 @@ from not_service.settings import TOKEN, URL
 def send_message(content: list, text):
     bearer_token = TOKEN
     for item in content:
-        time.sleep(5)
+        # time.sleep(50)
         url = f"{URL}/{item['id']}"
         json = item
         json['text'] = text

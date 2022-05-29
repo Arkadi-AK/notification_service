@@ -39,3 +39,7 @@ pip install -r requirements.txt
 или `docker compose up --build`
 
 * п. 5. http://127.0.0.1:8000/docs # По этому адресу открывается страница со Swagger UI с описанием разработанного API.
+![Список рассылок](not_service/docs/pictures/url_docs_swager.png)
+
+* п. 6. Реализован администраторский WebUI. Для входа перейдите по адресу:
+`http://127.0.0.1:8000/admin`
