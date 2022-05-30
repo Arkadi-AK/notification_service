@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.contrib import messages
 from django.utils.translation import ngettext
 
-from api.post_sender import send_message
 from notify_sender.models import Sender, Client, Message
 
 
@@ -12,8 +11,6 @@ class SenderAdmin(admin.ModelAdmin):
     actions = ['start_mailing']
 
     def start_mailing(self, request, queryset):
-        # updated = send_message(request)
-        # updated = queryset.update(status='p')
         updated = queryset.update
         self.message_user(request, ngettext(
             '%d story was successfully marked as published.',

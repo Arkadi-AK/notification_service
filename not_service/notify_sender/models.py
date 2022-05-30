@@ -1,25 +1,6 @@
-from datetime import datetime
-from django.utils import timezone
-from django.utils.timezone import activate
-
-from django.utils.timezone import localtime, now
-
-# get now datetime based upon django settings.py TZ_INFO
-from notify_sender.tasks import send_message_task
-
-l = localtime(now())
-
-
-
-
-from not_service import settings
-
-# activate(settings.TIME_ZONE)
-
-
 from django.db import models
 
-from api.post_sender import send_message
+from notify_sender.tasks import send_message_task
 
 
 class Client(models.Model):
@@ -46,29 +27,6 @@ class Sender(models.Model):
     def __str__(self):
         return f"Рассылка {self.id}"
 
-    # def select_clients_with_filter(self):
-    #     print("Сработал метод select_clients_with_filter")
-    #     text = self.text
-    #     filter = self.filter
-    #     start_mailing = self.start_mailing.strftime('%Y.%m.%d %H:%M:%S')
-    #     stop_mailing = self.stop_mailing.strftime('%Y.%m.%d %H:%M:%S')
-    #     now = datetime.utcnow().strftime('%Y.%m.%d %H:%M:%S')
-    #     if filter:
-    #         queryset = Client.objects.filter(teg=filter).values('id', 'phone_number')
-    #     else:
-    #         queryset = Client.objects.all().values('id', 'phone_number')
-    #     queryset = list(queryset)
-    #     send_message_task2.delay(queryset, text, start_mailing, stop_mailing)
-
-        # if start_mailing < now < stop_mailing:
-        #     print("дата в пределах")
-        #     queryset = Client.objects.filter(teg=filter).values('id', 'phone_number')
-        #     queryset = list(queryset)
-            # Отправка сообщения на url адрес
-            # send_message_task.delay(queryset, text)
-            # send_message_task2.delay(text)
-            # return queryset
-
     def save(self, *args, **kwargs):
         text = self.text
         filter = self.filter
@@ -79,7 +37,6 @@ class Sender(models.Model):
         else:
             queryset = Client.objects.all().values('id', 'phone_number')
         queryset = list(queryset)
-        print("Сработал метод save в модели")
         super().save(*args, **kwargs)
         kw = {'queryset': queryset, 'text': text}
         send_message_task.apply_async(eta=eta, expires=expires, kwargs=kw)
