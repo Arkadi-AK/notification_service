@@ -2,8 +2,9 @@
 
 ## Установка
 ```bash
-python3 -m venv .venv
-. .venv/bin/activate
+python3 -m venv venv
+. venv/bin/activate
+cd not_service
 pip install -r requirements.txt
 ```
 Переименуйте файл ".env.exsample" в ".env" и введите необходимые данные.
@@ -42,4 +43,4 @@ pip install -r requirements.txt
 ![Список рассылок](not_service/docs/pictures/url_docs_swager.png)
 
 * п. 6. Реализован администраторский WebUI. Для входа перейдите по адресу:
-`http://127.0.0.1:8000/admin`
+http://127.0.0.1:8000/admin
